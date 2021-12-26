@@ -8,10 +8,26 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+//static folder
+app.use("/", express.static(path.join(__dirname, 'public')));
 
 app.get("/", (req, res)=>{
-    res.send("ooga");
+    res.sendFile(path.join(__dirname, "/public/main.html"));
 });
+
+app.get("/play", (req, res)=>{
+    if(req.query.room){
+        console.log(req.query.room);
+        res.sendFile(path.join(__dirname, "/public/room.html"));
+    }
+    else{
+        console.log("NO ROOM CODE PROVIDED");
+        res.send("NO ROOM CODE PROVIDED");
+    }
+    
+    
+
+})
 
 io.on('connection', socket =>{
     
