@@ -17,7 +17,7 @@ app.get("/", (req, res)=>{
 
 app.get("/play", (req, res)=>{
     if(req.query.room){
-        console.log(req.query.room);
+        console.log("user joined room: " + req.query.room);
         res.sendFile(path.join(__dirname, "/public/room.html"));
     }
     else{
@@ -31,6 +31,13 @@ app.get("/play", (req, res)=>{
 
 io.on('connection', socket =>{
     
+    socket.on('joinRoom', ({roomCode})=>{
+        socket.join(roomCode);
+    });
+
+    socket.on('playNote', ({note, room})=>{
+        io.to(room).emit('playAudio', note);
+    })
 });
 
 const PORT = process.env.PORT || 3000;
