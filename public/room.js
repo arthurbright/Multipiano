@@ -25,13 +25,20 @@ else{
 
 
 //debug
-testButton.addEventListener("click", ()=>{
-    socket.emit("playNote", {note: 5, room: roomCode});
-})
 testButton2.addEventListener("click", ()=>{
     socket.emit("playNote", {note: 0, room: roomCode});
+});
+
+//template for playing with mouse?
+testButton.addEventListener("mousedown", ()=>{
+    socket.emit("playNote", {note: 5, room: roomCode});
+});
+testButton.addEventListener("mouseup", ()=>{
+    socket.emit("releaseNote", {note: 5, room: roomCode});
+});
+testButton.addEventListener("mouseleave", ()=>{
+    socket.emit("releaseNote", {note: 5, room: roomCode});
 })
-//TO PLAY A NOTE, socket.emit("playNote", {note: 5, room: roomCode});
 
 //recieving notes
 socket.on("playAudio", (note)=>{
@@ -44,6 +51,18 @@ socket.on("playAudio", (note)=>{
     }
     
 })
+
+//stopping notes
+socket.on("stopAudio", (note) =>{
+    if(note == 0){
+        testAudio.pause();
+        testAudio.currentTime = 0;
+    }
+    else{
+        testAudio2.pause();
+        testAudio2.currentTime = 0;
+    }
+});
 
 
 //function to determine if room code is valid

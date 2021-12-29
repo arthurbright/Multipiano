@@ -37,7 +37,11 @@ io.on('connection', socket =>{
 
     socket.on('playNote', ({note, room})=>{
         io.to(room).emit('playAudio', note);
-    })
+    });
+
+    socket.on('releaseNote', ({note, room})=>{
+        io.to(room).emit('stopAudio', note);
+    });
 });
 
 const PORT = process.env.PORT || 3000;
