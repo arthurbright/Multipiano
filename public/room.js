@@ -4,6 +4,9 @@ const socket = io();
 //elements
 const roomLabel = document.getElementById("roomlabel");
 const testButton = document.getElementById("testButton");
+const testButton2 = document.getElementById("testButton2");
+const testAudio = document.getElementById("testAudio1");
+const testAudio2 = document.getElementById("testAudio2");
 
 const urlSearchParams = new URLSearchParams(window.location.search);
 const roomCode = urlSearchParams.get('room');
@@ -25,11 +28,21 @@ else{
 testButton.addEventListener("click", ()=>{
     socket.emit("playNote", {note: 5, room: roomCode});
 })
+testButton2.addEventListener("click", ()=>{
+    socket.emit("playNote", {note: 0, room: roomCode});
+})
 //TO PLAY A NOTE, socket.emit("playNote", {note: 5, room: roomCode});
 
 //recieving notes
 socket.on("playAudio", (note)=>{
     console.log(note + " played");
+    if(note == 0){
+        testAudio.play();
+    }
+    else{
+        testAudio2.play();
+    }
+    
 })
 
 
