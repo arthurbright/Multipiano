@@ -1,0 +1,28 @@
+#piano{
+    width: 100%;
+    background-color: powderblue;
+    height: 300px;
+    position: relative;
+    border: 50px;
+}
+
+#whitekeys{
+    position:absolute;
+    height: 100%;
+    display: flex;
+}
+
+#blackkeys{
+    position:absolute;
+}
+
+.whiteKey{
+    
+    background-color: white;
+    margin: 1px;
+    width: 40px;
+}
+
+.blackKey{
+
+}

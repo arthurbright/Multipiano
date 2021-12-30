@@ -3,14 +3,28 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../images/icon.jpg">
+    <link rel="stylesheet" href="../room.css">
     <title>MultiPiano Room</title>
 </head>
 <body>
     <p id="roomlabel"> oogabooga </p>
     <button id="testButton">Ooga</button>
     <button id="testButton2">Booga</button>
-    <audio id = "testAudio1" src="../audio/padoru.mp3"></audio>
-    <audio id = "testAudio2" src="../audio/padoru.mp3"></audio>
+    <audio id = "testAudio1" src="../audio/C3.wav"></audio>
+    <audio id = "testAudio2" src="../audio/C3.wav"></audio>
+
+
+    <div id = "piano">
+        <div id = "whitekeys">
+           
+        </div>
+
+        <div id = "blackkeys">
+            BLACK
+        </div>
+        
+    </div>
 
     <script src = "/socket.io/socket.io.js"></script>
     <script src = "../room.js"></script>
