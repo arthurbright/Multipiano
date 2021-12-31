@@ -5,6 +5,7 @@ const socket = io();
 const roomLabel = document.getElementById("roomlabel");
 const whiteKeyContainer = document.getElementById("whitekeys");
 const blackKeyContainer = document.getElementById("blackkeys");
+const audioContainer = document.getElementById("audioSources");
 
 
 
@@ -38,9 +39,11 @@ function validRoomCode(str){
 
 ////////////////////////////////////////////////////setting up keys
 //WHITE KEYS
-const offset = [0, 1, 2, 2, 3, 4, 5]; //offset for converting white key index to overall key index
+const offset = [0, 1, 1, 2, 3, 3, 4]; //offset for converting white key index to overall key index
 whiteKeys = [];
-for(i = 0; i < 10; i ++){
+blackKeys = [];
+audioSources = [];
+for(i = 0; i < 52; i ++){
     btn = document.createElement("BUTTON");
     btn.classList.add("whiteKey");
 
@@ -93,38 +96,33 @@ testButton.addEventListener("mouseleave", ()=>{
 
 ///////////////////////////////////////////////////////////audio players
 //function to convert a note index to file name
-const pitches = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
+const pitches = ['a', 'a%23', 'b', 'c', 'c%23', 'd', 'd%23', 'e', 'f', 'f%23', 'g', 'g%23'];
 function indexToFileName(ind){
     const pitch = pitches[ind % 12];
-    const octave = Math.floor(ind/12);
-    return ("../audio/" + pitch + octave + "vL.wav");
+    const octave = Math.floor((ind + 9)/12);
+    return ("../audio/" + pitch + octave + ".ogg");
 }
 
 //making the audio players
-//TODO
+for(i = 0; i < 88; i ++){
+    source = document.createElement("AUDIO");
+    console.log(indexToFileName(i));
+    source.src = indexToFileName(i);
+    audioSources.push(source);
+    source.load(); //preload the audio so no delay
+    audioContainer.appendChild(source);
+}
+
 
 //recieving notes
 socket.on("playAudio", (note)=>{
     console.log(note + " played");
-    if(note == 0){
-        testAudio.currentTime = 0;
-        testAudio.play();
-    }
-    else{
-        testAudio2.currentTime = 0;
-        testAudio2.play();
-    }
+    audioSources[note].currentTime = 0;
+    audioSources[note].play();
     
 })
 
 //stopping notes
 socket.on("stopAudio", (note) =>{
-    if(note == 0){
-        testAudio.pause();
-       
-    }
-    else{
-        testAudio2.pause();
-        
-    }
+    audioSources[note].pause();
 });
