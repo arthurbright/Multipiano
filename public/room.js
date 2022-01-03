@@ -72,7 +72,7 @@ for(i = 0; i < 52; i ++){
 }
 //BLACK KEYS
 const blackOffset = [1, 3, 4, 6, 7];
-for(i = 0; i < 30; i ++){
+for(i = 0; i < 36; i ++){
     btn = document.createElement("BUTTON");
     btn.classList.add("blackKey");
 
