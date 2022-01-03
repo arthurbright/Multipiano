@@ -13,16 +13,28 @@
 }
 
 #blackkeys{
-    position:absolute;
+    position: absolute;
+    left: 20px;
+    height: 60%;
+    display: flex;
+    pointer-events: none;
+}
+
+.blackSpacer{
+    margin: 0px 5px 0px 5px;
+    width: 30px;
+    pointer-events: none;
 }
 
 .whiteKey{
-    
     background-color: white;
-    margin: 1px;
+    
     width: 40px;
 }
 
 .blackKey{
-
+    background-color: black;
+    margin: 0px 5px 0px 5px;
+    width: 30px;
+    pointer-events: auto;
 }

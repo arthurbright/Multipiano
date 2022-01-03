@@ -48,7 +48,7 @@ for(i = 0; i < 52; i ++){
     btn.classList.add("whiteKey");
 
     whiteKeys.push(btn); //store in array of keys
-    const ind = whiteKeys.length - 1;
+    const ind = i;
 
     //process the ind (note number)
     const pitch = (ind % 7) + offset[ind % 7];
@@ -71,7 +71,39 @@ for(i = 0; i < 52; i ++){
 
 }
 //BLACK KEYS
-//TODO
+const blackOffset = [1, 3, 4, 6, 7];
+for(i = 0; i < 30; i ++){
+    btn = document.createElement("BUTTON");
+    btn.classList.add("blackKey");
+
+    blackKeys.push(btn);
+    const ind = i;
+     //process the ind (note number)
+     const pitch = (ind % 5) + blackOffset[ind % 5];
+     const octave = Math.floor(ind/5);
+     const blackInd = octave * 12 + pitch;
+
+      //add functionality
+    btn.addEventListener("mousedown", ()=>{
+        socket.emit("playNote", {note: blackInd, room: roomCode});
+    });
+    btn.addEventListener("mouseup", ()=>{
+        socket.emit("releaseNote", {note: blackInd, room: roomCode});
+    });
+    btn.addEventListener("mouseleave", ()=>{
+        socket.emit("releaseNote", {note: blackInd, room: roomCode});
+    });
+
+    //insert button into document
+    blackKeyContainer.appendChild(btn);
+
+    //insert spacers for black key
+    if(i % 5 == 0 || i % 5 == 2){
+        div = document.createElement("DIV");
+        div.classList.add("blackSpacer");
+        blackKeyContainer.appendChild(div);
+    }
+}
 
 
 
