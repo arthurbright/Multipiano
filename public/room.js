@@ -65,6 +65,12 @@ for(i = 0; i < 52; i ++){
     btn.addEventListener("mouseleave", ()=>{
         socket.emit("releaseNote", {note: whiteInd, room: roomCode});
     });
+    btn.addEventListener("mouseenter", (e)=>{
+        //only if the left mouse button is pressed down
+        if(e.buttons == 1){
+            socket.emit("playNote", {note: whiteInd, room: roomCode});
+        }
+    });
 
     //insert button into document
     whiteKeyContainer.appendChild(btn);   
@@ -93,6 +99,12 @@ for(i = 0; i < 36; i ++){
     btn.addEventListener("mouseleave", ()=>{
         socket.emit("releaseNote", {note: blackInd, room: roomCode});
     });
+    btn.addEventListener("mouseenter", (e)=>{
+        //only if the left mouse button is pressed down
+        if(e.buttons == 1){
+            socket.emit("playNote", {note: blackInd, room: roomCode});
+        }
+    });
 
     //insert button into document
     blackKeyContainer.appendChild(btn);
@@ -104,27 +116,6 @@ for(i = 0; i < 36; i ++){
         blackKeyContainer.appendChild(div);
     }
 }
-
-
-
-//////////////////////////////////////////////////////////////////////interactions
-
-
-//debug
-testButton2.addEventListener("click", ()=>{
-    socket.emit("playNote", {note: 0, room: roomCode});
-});
-
-//template for playing with mouse?
-testButton.addEventListener("mousedown", ()=>{
-    socket.emit("playNote", {note: 5, room: roomCode});
-});
-testButton.addEventListener("mouseup", ()=>{
-    socket.emit("releaseNote", {note: 5, room: roomCode});
-});
-testButton.addEventListener("mouseleave", ()=>{
-    socket.emit("releaseNote", {note: 5, room: roomCode});
-});
 
 ///////////////////////////////////////////////////////////audio players
 //function to convert a note index to file name
@@ -138,7 +129,6 @@ function indexToFileName(ind){
 //making the audio players
 for(i = 0; i < 88; i ++){
     source = document.createElement("AUDIO");
-    console.log(indexToFileName(i));
     source.src = indexToFileName(i);
     audioSources.push(source);
     source.load(); //preload the audio so no delay
@@ -146,9 +136,12 @@ for(i = 0; i < 88; i ++){
 }
 
 
+
+
+///////////////////////////////////////////////////////////////client recieving information
 //recieving notes
 socket.on("playAudio", (note)=>{
-    console.log(note + " played");
+    //console.log(note + " played");
     audioSources[note].currentTime = 0;
     audioSources[note].play();
     
@@ -158,3 +151,44 @@ socket.on("playAudio", (note)=>{
 socket.on("stopAudio", (note) =>{
     audioSources[note].pause();
 });
+//TODO add fade?
+
+
+
+///////////////////////////////////////////////////////////key shortcuts
+//A0 = 0
+//C1 = 3, C2 = 15, C3 = 27, C4 = 39, C5 = 51, C6 = 63, C7 = 75, C8 = 87
+
+const keyMapsArray = 
+[['CapsLock', 46], ['q', 47], ['a', 48], ['w', 49], ['s', 50], 
+['d', 51], ['r', 52], ['f', 53], ['t', 54], ['g', 55], ['h', 56], ['u', 57], ['j', 58], ['i', 59], ['k', 60], ['o', 61], ['l', 62], 
+[';', 63], ['[', 64], ["'", 65], [']', 66], ['Enter', 67]];
+//turn keyMapsArray into map
+const keyMaps = new Map();
+
+const curPressed = new Map(); //keep track of which notes are pressed to prevent input spam
+
+for(pair of keyMapsArray){
+    keyMaps.set(pair[0], pair[1]);
+    curPressed.set(pair[0], false);
+}
+
+
+
+//add listeners for each key in the keymap
+document.addEventListener("keydown", (e)=>{
+
+    if(keyMaps.get(e.key) && !curPressed.get(e.key)){
+        curPressed.set(e.key, true);
+        socket.emit("playNote", {note: keyMaps.get(e.key), room: roomCode});
+    }
+});
+
+document.addEventListener("keyup", (e)=>{
+    
+    if(keyMaps.get(e.key)){
+        curPressed.set(e.key, false);
+        socket.emit("releaseNote", {note: keyMaps.get(e.key), room: roomCode});
+    }
+});
+
