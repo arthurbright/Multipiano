@@ -178,17 +178,30 @@ for(pair of keyMapsArray){
 //add listeners for each key in the keymap
 document.addEventListener("keydown", (e)=>{
 
-    if(keyMaps.get(e.key) && !curPressed.get(e.key)){
-        curPressed.set(e.key, true);
-        socket.emit("playNote", {note: keyMaps.get(e.key), room: roomCode});
+    //take care of caps lock first
+    var key = e.key;
+    if(e.key.length == 1){
+        key = key.toLowerCase();
+    }
+    
+    //play key accordingly
+    if(keyMaps.get(key) && !curPressed.get(key)){
+        curPressed.set(key, true);
+        socket.emit("playNote", {note: keyMaps.get(key), room: roomCode});
     }
 });
 
 document.addEventListener("keyup", (e)=>{
-    
-    if(keyMaps.get(e.key)){
-        curPressed.set(e.key, false);
-        socket.emit("releaseNote", {note: keyMaps.get(e.key), room: roomCode});
+    //take care of caps lock first
+    var key = e.key;
+    if(e.key.length == 1){
+        key = key.toLowerCase();
+    }
+
+    //play the key if its in the map
+    if(keyMaps.get(key)){
+        curPressed.set(key, false);
+        socket.emit("releaseNote", {note: keyMaps.get(key), room: roomCode});
     }
 });
 
