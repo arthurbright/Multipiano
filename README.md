@@ -6,6 +6,7 @@ For keyboard, the [D] key is C5, and the rest of the notes are laid out like a n
 ## Try it out
 https://multipiano.herokuapp.com/
 ## Features to be added/in progress
+- Changable hotkeys
 - Audio fade
 - Key highlighting
 - Metronome feature
