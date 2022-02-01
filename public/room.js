@@ -144,13 +144,55 @@ socket.on("playAudio", (note)=>{
     //console.log(note + " played");
     audioSources[note].currentTime = 0;
     audioSources[note].play();
+    colorNote(note, true);
+
     
 })
 
 //stopping notes
 socket.on("stopAudio", (note) =>{
     audioSources[note].pause();
+    colorNote(note, false);
 });
+
+
+
+//coloring notes
+const ONCOLOR = "#0024FF";
+const BLACK = "#000000";
+const WHITE = "#FFFFFF";
+const offset2 = [0, 0, 1, 2, 1, 3, 2, 4, 5, 3, 6, 4];
+function colorNote(note, on){
+    var pitch = note % 12;
+    var octave = Math.floor(note/12);
+
+    //if its a black key
+    if(pitch == 1 || pitch == 4 || pitch == 6 || pitch == 9 || pitch == 11){
+        var ind = octave * 5 + offset2[pitch];
+        if(on){
+            blackKeys[ind].style.backgroundColor = ONCOLOR;
+        }
+        else{
+            blackKeys[ind].style.backgroundColor = BLACK;
+        }
+        
+        
+    }
+    //if its a white key
+    else{
+        var ind = octave * 7 + offset2[pitch];
+        if(on){
+            whiteKeys[ind].style.backgroundColor = ONCOLOR;
+        }
+        else{
+            whiteKeys[ind].style.backgroundColor = WHITE;
+        }
+    }
+}
+
+
+
+
 //TODO add fade?
 
 
