@@ -203,7 +203,7 @@ function colorNote(note, on){
 //C1 = 3, C2 = 15, C3 = 27, C4 = 39, C5 = 51, C6 = 63, C7 = 75, C8 = 87
 
 const keyMapsArray = 
-[['CapsLock', 46], ['q', 47], ['a', 48], ['w', 49], ['s', 50], 
+[['ShiftK', -100000], ['CapsLock', 46], ['q', 47], ['a', 48], ['w', 49], ['s', 50], 
 ['d', 51], ['r', 52], ['f', 53], ['t', 54], ['g', 55], ['h', 56], ['u', 57], ['j', 58], ['i', 59], ['k', 60], ['o', 61], ['l', 62], 
 [';', 63], ['[', 64], ["'", 65], [']', 66], ['Enter', 67]];
 //turn keyMapsArray into map
@@ -216,21 +216,55 @@ for(pair of keyMapsArray){
     curPressed.set(pair[0], false);
 }
 
-
+shift = 0;
 
 //add listeners for each key in the keymap
 document.addEventListener("keydown", (e)=>{
 
-    //take care of caps lock first
     var key = e.key;
-    if(e.key.length == 1){
-        key = key.toLowerCase();
+
+    //detect if key is a shift key
+    if(e.key == 'Shift' && !curPressed.get('ShiftK')) {
+        curPressed.set('ShiftK', true);
+        if(e.location == KeyboardEvent.DOM_KEY_LOCATION_LEFT) { // Left Shift
+            if (shift > -5) {
+                // unpress all currently pressed keys + repress them in new octave
+                for (const [key, value] of curPressed.entries()) {
+                    if (value) {  // if key pressed
+                        releaseKey(key);
+                        shift--;
+                        playKey(key);
+                        shift++;
+                    }
+                }
+                shift--;
+            }
+        }
+        else { // Right Shift
+            if (shift < 3) {
+                // unpress all currently pressed keys + repress them in new octave
+                for (const [key, value] of curPressed.entries()) {
+                    if (value) {  // if key pressed
+                        releaseKey(key);
+                        shift++;
+                        playKey(key);
+                        shift--;
+                    }
+                }
+                shift++;
+            }
+        }
     }
-    
-    //play key accordingly
-    if(keyMaps.get(key) && !curPressed.get(key)){
-        curPressed.set(key, true);
-        socket.emit("playNote", {note: keyMaps.get(key), room: roomCode});
+    else {
+        //take care of caps lock first
+        if(e.key.length == 1){
+            key = key.toLowerCase();
+        }
+        
+        //play key accordingly
+        if(keyMaps.get(key) && !curPressed.get(key)){
+            playKey(key);    
+        }
     }
 });
 
@@ -241,10 +275,31 @@ document.addEventListener("keyup", (e)=>{
         key = key.toLowerCase();
     }
 
-    //play the key if its in the map
+    if(e.key == 'Shift') {
+        curPressed.set('ShiftK', false);
+    }
+
+    //release key accordingly
     if(keyMaps.get(key)){
-        curPressed.set(key, false);
-        socket.emit("releaseNote", {note: keyMaps.get(key), room: roomCode});
+        releaseKey(key);
     }
 });
+
+function playKey(key) {
+    curPressed.set(key, true);
+    var cnote = keyMaps.get(key) + 12 * shift; // value of note pressed
+    if (0 <= cnote && cnote <= 87) {
+        socket.emit("playNote", {note: cnote, room: roomCode});
+    }
+}
+
+function releaseKey(key) {
+    curPressed.set(key, false);
+    var cnote = keyMaps.get(key) + 12 * shift; // value of note pressed
+    if (0 <= cnote && cnote <= 87) {
+        socket.emit("releaseNote", {note: cnote, room: roomCode});
+    }
+}
+
+
 
