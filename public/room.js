@@ -132,6 +132,7 @@ for(i = 0; i < 88; i ++){
     source.src = indexToFileName(i);
     audioSources.push(source);
     source.load(); //preload the audio so no delay
+    source.volume = 0.6; //initial volume set a little lower than max
     audioContainer.appendChild(source);
 }
 
