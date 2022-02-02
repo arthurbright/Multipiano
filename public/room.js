@@ -146,7 +146,8 @@ socket.on("playAudio", (note)=>{
     //console.log(note + " played");
     audioSources[note].currentTime = 0;
     audioSources[note].play();
-    colorNote(note, true);
+    noteState.set(note, true);
+    colorNote(note);
 
     
 })
@@ -154,7 +155,8 @@ socket.on("playAudio", (note)=>{
 //stopping notes
 socket.on("stopAudio", (note) =>{
     audioSources[note].pause();
-    colorNote(note, false);
+    noteState.set(note, false);
+    colorNote(note);
 });
 
 
@@ -164,29 +166,50 @@ const ONCOLOR = "#0024FF";
 const BLACK = "#000000";
 const WHITE = "#FFFFFF";
 const offset2 = [0, 0, 1, 2, 1, 3, 2, 4, 5, 3, 6, 4];
-function colorNote(note, on){
+
+const RANGEON = "#44DB02";
+const RANGEWHITE = "#C0FFC0";
+const RANGEBLACK = "#204A31";
+
+function inRange(note) {
+    return (keyMaps.get('CapsLock') + shift <= note) 
+        && (note <= keyMaps.get('Enter') + shift);
+}
+
+function colorNote(note){
+    var on = noteState.get(note);
     var pitch = note % 12;
     var octave = Math.floor(note/12);
 
     //if its a black key
     if(pitch == 1 || pitch == 4 || pitch == 6 || pitch == 9 || pitch == 11){
         var ind = octave * 5 + offset2[pitch];
-        if(on){
+        if (on && inRange(note)) {
+            blackKeys[ind].style.backgroundColor = RANGEON;
+        }
+        else if (on){
             blackKeys[ind].style.backgroundColor = ONCOLOR;
         }
-        else{
+        else if (inRange(note)) {
+            blackKeys[ind].style.backgroundColor = RANGEBLACK;
+        }
+        else {
             blackKeys[ind].style.backgroundColor = BLACK;
         }
-        
-        
     }
     //if its a white key
     else{
         var ind = octave * 7 + offset2[pitch];
-        if(on){
+        if (on && inRange(note)) {
+            whiteKeys[ind].style.backgroundColor = RANGEON;
+        }
+        else if (on) {
             whiteKeys[ind].style.backgroundColor = ONCOLOR;
         }
-        else{
+        else if (inRange(note)) {
+            whiteKeys[ind].style.backgroundColor = RANGEWHITE;
+        }
+        else {
             whiteKeys[ind].style.backgroundColor = WHITE;
         }
     }
@@ -208,12 +231,19 @@ const keyMaps = new Map();
 
 const curPressed = new Map(); //keep track of which notes are pressed to prevent input spam
 
-for(pair of keyMapsArray){
+for (pair of keyMapsArray){
     keyMaps.set(pair[0], pair[1]);
     curPressed.set(pair[0], false);
 }
 
+const noteState = new Map();
+for (i = 0; i < 88; i++) {
+    noteState.set(i, false);
+}
+
 shift = 0;
+const shift_rlim = 36;
+const shift_llim = -60;
 
 //add listeners for each key in the keymap
 document.addEventListener("keydown", (e)=>{
@@ -224,32 +254,25 @@ document.addEventListener("keydown", (e)=>{
     if(e.key == 'Shift' && !curPressed.get('ShiftK')) {
         curPressed.set('ShiftK', true);
         if(e.location == KeyboardEvent.DOM_KEY_LOCATION_LEFT) { // Left Shift
-            if (shift > -5) {
-                // unpress all currently pressed keys + repress them in new octave
-                for (const [key, value] of curPressed.entries()) {
-                    if (value) {  // if key pressed
-                        releaseKey(key);
-                        shift--;
-                        playKey(key);
-                        shift++;
-                    }
-                }
-                shift--;
+            if (shift-12 >= shift_llim) {
+                changeShift(-12);
             }
         }
         else { // Right Shift
-            if (shift < 3) {
-                // unpress all currently pressed keys + repress them in new octave
-                for (const [key, value] of curPressed.entries()) {
-                    if (value) {  // if key pressed
-                        releaseKey(key);
-                        shift++;
-                        playKey(key);
-                        shift--;
-                    }
-                }
-                shift++;
+            if (shift+12 <= shift_rlim) {
+                changeShift(12);
             }
+        }
+    }
+    // left arrow
+    else if(e.key == 'ArrowLeft') {
+        if (shift-1 >= shift_llim) {
+            changeShift(-1);
+        }
+    }
+    else if (e.key == 'ArrowRight') {
+        if (shift+1 <= shift_rlim) {
+            changeShift(1);
         }
     }
     else {
@@ -264,6 +287,20 @@ document.addEventListener("keydown", (e)=>{
         }
     }
 });
+
+function changeShift(delta) {
+    // unpress all currently pressed keys + repress them in new shift
+    for (const [key, value] of curPressed.entries()) {
+        if (value) {  // if key pressed
+            releaseKey(key);
+            shift += delta;
+            playKey(key);
+            shift -= delta;
+        }
+    }
+    shift += delta;
+    colorNotes();
+}
 
 document.addEventListener("keyup", (e)=>{
     //take care of caps lock first
@@ -284,7 +321,7 @@ document.addEventListener("keyup", (e)=>{
 
 function playKey(key) {
     curPressed.set(key, true);
-    var cnote = keyMaps.get(key) + 12 * shift; // value of note pressed
+    var cnote = keyMaps.get(key) + shift; // value of note pressed
     if (0 <= cnote && cnote <= 87) {
         playLocalNote(cnote);
     }
@@ -292,7 +329,7 @@ function playKey(key) {
 
 function releaseKey(key) {
     curPressed.set(key, false);
-    var cnote = keyMaps.get(key) + 12 * shift; // value of note pressed
+    var cnote = keyMaps.get(key) + shift; // value of note pressed
     if (0 <= cnote && cnote <= 87) {
         releaseLocalNote(cnote);
     }
@@ -307,13 +344,24 @@ function playLocalNote(note){
     socket.emit("playNote", {note: note, room: roomCode});
     audioSources[note].currentTime = 0;
     audioSources[note].play();
-    colorNote(note, true);
+    noteState.set(note, true);
+    //colorNote(note);
+    colorNotes();
 }
 
 function releaseLocalNote(note){
     socket.emit("releaseNote", {note: note, room: roomCode});
     audioSources[note].pause();
-    colorNote(note, false);
+    noteState.set(note, false);
+    //colorNote(note);
+    colorNotes();
+}
+
+function colorNotes() {
+    // super jank and temporary
+    for (i = 0; i < 88; i++) {
+        colorNote(i);
+    }
 }
 
 
