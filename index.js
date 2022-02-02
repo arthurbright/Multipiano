@@ -36,11 +36,11 @@ io.on('connection', socket =>{
     });
 
     socket.on('playNote', ({note, room})=>{
-        io.to(room).emit('playAudio', note);
+        socket.broadcast.to(room).emit('playAudio', note);
     });
 
     socket.on('releaseNote', ({note, room})=>{
-        io.to(room).emit('stopAudio', note);
+        socket.broadcast.to(room).emit('stopAudio', note);
     });
 });
 

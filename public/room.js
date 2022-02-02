@@ -57,18 +57,18 @@ for(i = 0; i < 52; i ++){
 
     //add functionality
     btn.addEventListener("mousedown", ()=>{
-        socket.emit("playNote", {note: whiteInd, room: roomCode});
+        playLocalNote(whiteInd);
     });
     btn.addEventListener("mouseup", ()=>{
-        socket.emit("releaseNote", {note: whiteInd, room: roomCode});
+        releaseLocalNote(whiteInd);
     });
     btn.addEventListener("mouseleave", ()=>{
-        socket.emit("releaseNote", {note: whiteInd, room: roomCode});
+        releaseLocalNote(whiteInd);
     });
     btn.addEventListener("mouseenter", (e)=>{
         //only if the left mouse button is pressed down
         if(e.buttons == 1){
-            socket.emit("playNote", {note: whiteInd, room: roomCode});
+            playLocalNote(whiteInd);
         }
     });
 
@@ -91,18 +91,18 @@ for(i = 0; i < 36; i ++){
 
       //add functionality
     btn.addEventListener("mousedown", ()=>{
-        socket.emit("playNote", {note: blackInd, room: roomCode});
+        playLocalNote(blackInd);
     });
     btn.addEventListener("mouseup", ()=>{
-        socket.emit("releaseNote", {note: blackInd, room: roomCode});
+        releaseLocalNote(blackInd);
     });
     btn.addEventListener("mouseleave", ()=>{
-        socket.emit("releaseNote", {note: blackInd, room: roomCode});
+        releaseLocalNote(blackInd);
     });
     btn.addEventListener("mouseenter", (e)=>{
         //only if the left mouse button is pressed down
         if(e.buttons == 1){
-            socket.emit("playNote", {note: blackInd, room: roomCode});
+            playLocalNote(blackInd);
         }
     });
 
@@ -289,7 +289,7 @@ function playKey(key) {
     curPressed.set(key, true);
     var cnote = keyMaps.get(key) + 12 * shift; // value of note pressed
     if (0 <= cnote && cnote <= 87) {
-        socket.emit("playNote", {note: cnote, room: roomCode});
+        playLocalNote(cnote);
     }
 }
 
@@ -297,9 +297,24 @@ function releaseKey(key) {
     curPressed.set(key, false);
     var cnote = keyMaps.get(key) + 12 * shift; // value of note pressed
     if (0 <= cnote && cnote <= 87) {
-        socket.emit("releaseNote", {note: cnote, room: roomCode});
+        releaseLocalNote(cnote);
     }
 }
 
 
 
+
+
+////////////////////////////////////////////////////////////////MAIN NOTE PLAYING FUNCTIONS
+function playLocalNote(note){
+    socket.emit("playNote", {note: note, room: roomCode});
+    audioSources[note].currentTime = 0;
+    audioSources[note].play();
+    colorNote(note, true);
+}
+
+function releaseLocalNote(note){
+    socket.emit("releaseNote", {note: note, room: roomCode});
+    audioSources[note].pause();
+    colorNote(note, false);
+}
