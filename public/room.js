@@ -6,6 +6,7 @@ const roomLabel = document.getElementById("roomlabel");
 const whiteKeyContainer = document.getElementById("whitekeys");
 const blackKeyContainer = document.getElementById("blackkeys");
 const audioContainer = document.getElementById("audioSources");
+const volumeSlider = document.getElementById("volumeSlider");
 
 
 
@@ -194,10 +195,6 @@ function colorNote(note, on){
 
 
 
-//TODO add fade?
-
-
-
 ///////////////////////////////////////////////////////////key shortcuts
 //A0 = 0
 //C1 = 3, C2 = 15, C3 = 27, C4 = 39, C5 = 51, C6 = 63, C7 = 75, C8 = 87
@@ -317,4 +314,15 @@ function releaseLocalNote(note){
     socket.emit("releaseNote", {note: note, room: roomCode});
     audioSources[note].pause();
     colorNote(note, false);
+}
+
+
+
+///////////////////////////////////////////VOLUME CONTROL AND FADING(TODO)
+volumeSlider.onchange = ()=>{
+    for(i = 0; i < audioSources.length; i ++){
+        audioSources[i].volume = volumeSlider.value/100;
+    }
+
+    
 }
