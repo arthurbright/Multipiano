@@ -124,7 +124,7 @@ const pitches = ['a', 'a%23', 'b', 'c', 'c%23', 'd', 'd%23', 'e', 'f', 'f%23', '
 function indexToFileName(ind){
     const pitch = pitches[ind % 12];
     const octave = Math.floor((ind + 9)/12);
-    return ("../audio/" + pitch + octave + ".ogg");
+    return ("../audio2/" + pitch + octave + ".wav");
 }
 
 //making the audio players
