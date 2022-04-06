@@ -5,15 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MultiPiano</title>
     <link rel="icon" href="../images/icon.jpg">
+    <link rel="stylesheet" href="../main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
 </head>
 <body>
-    <p>Enter room code (lowercase characters only):</p>
-    <form>
-        <input type="text" id = "inputbox">
-    </form>
-    <button id="submitButton">
-        Go!
-    </button>
+    <div id="container">
+        <h1 class="title">MultiPiano</h1>
+        <p class="label">Enter room code or create your own (lowercase characters only):</p>
+        <form>
+            <input type="text" id = "inputbox" value="Type here!">
+        </form>
+        <button id="submitButton">
+            Go!
+        </button>
+    </div>
 
     <script src = "main.js"></script>
 </body>

@@ -1,0 +1,58 @@
+body{
+    font-family: 'Quicksand', sans-serif;
+    background-color: #36393F;
+    color: white;
+}
+
+.title{
+    text-align: center;
+    font-size: 5vw;
+    margin: 0;
+}
+
+.label{
+    text-align: center;
+    font-size: 1.8vw;
+}
+
+#container{
+    margin-top: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+}
+
+button{
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.4vw;
+    background-color: #20a471;
+    border: 0;
+    color: white;
+    border-radius: 32px;
+    padding: 7px;
+    transition-duration: 0.3s;
+}
+
+button:hover{
+    background-color: #64d691;
+    color: #36393F;
+}
+button:active{
+    background-color: #36393F;
+}
+
+input{
+    font-family: 'Quicksand', sans-serif;
+    font-size: 1.4vw;
+    border-radius: 32px;
+    padding: 7px;
+    text-align: center;
+}
