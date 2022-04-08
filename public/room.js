@@ -7,6 +7,7 @@ const whiteKeyContainer = document.getElementById("whitekeys");
 const blackKeyContainer = document.getElementById("blackkeys");
 const audioContainer = document.getElementById("audioSources");
 const volumeSlider = document.getElementById("volumeSlider");
+const icon = document.getElementById("icon");
 
 
 
@@ -20,7 +21,7 @@ const urlSearchParams = new URLSearchParams(window.location.search);
 const roomCode = urlSearchParams.get('room');
 
 //set label
-roomLabel.innerHTML = "You are in room " + roomCode;
+roomLabel.innerHTML = "Room code: " + roomCode;
 
 //if room code is not valid, go back or redirect
 //currently, this code redirects back to home
@@ -33,10 +34,16 @@ else{
 
 //function to determine if room code is valid
 function validRoomCode(str){
-    //no need to check for null code
-    
-    return true;
+    return str.match(/^[a-z]+$/);
 }
+
+
+//add click to the icon (goes back to home)
+icon.addEventListener("click", (e)=>{
+    window.location.href = "/";
+});
+
+
 
 ////////////////////////////////////////////////////setting up keys
 //WHITE KEYS
@@ -118,6 +125,10 @@ for(i = 0; i < 36; i ++){
     }
 }
 
+
+
+
+
 ///////////////////////////////////////////////////////////audio players
 //function to convert a note index to file name
 const pitches = ['a', 'a%23', 'b', 'c', 'c%23', 'd', 'd%23', 'e', 'f', 'f%23', 'g', 'g%23'];
@@ -162,14 +173,14 @@ socket.on("stopAudio", (note) =>{
 
 
 //coloring notes
-const ONCOLOR = "#0024FF";
+const ONCOLOR = "#66d7eb";
 const BLACK = "#000000";
 const WHITE = "#FFFFFF";
 const offset2 = [0, 0, 1, 2, 1, 3, 2, 4, 5, 3, 6, 4];
 
-const RANGEON = "#44DB02";
-const RANGEWHITE = "#C0FFC0";
-const RANGEBLACK = "#204A31";
+const RANGEON = "#51acc5";
+const RANGEWHITE = "#B2FFFF";
+const RANGEBLACK = "#1c3d52";
 
 function inRange(note) {
     return (keyMaps.get('CapsLock') + shift <= note) 

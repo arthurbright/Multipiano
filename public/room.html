@@ -5,10 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../images/icon.jpg">
     <link rel="stylesheet" href="../room.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300&display=swap" rel="stylesheet">
     <title>MultiPiano Room</title>
 </head>
 <body>
-    <p id="roomlabel"> oogabooga </p>
+    <div id="header">
+        <img id="icon" src="../images/icon.jpg" alt="">
+        <h1>MultiPiano</h1>
+        <p id="roomlabel"> oogabooga </p>
+    </div>
+    
    
 
 
@@ -24,10 +32,19 @@
     </div>
 
     <div id = "audioSources">
-        audiosources
     </div>
-    <p>vall yoom</p>
-    <input type="range" min ="0" max = "100" value = "60" id = "volumeSlider">
+
+    <div id="footer">
+        <div class="footercontainer">
+            <p>Volume</p>
+            <input type="range" min ="0" max = "100" value = "60" id = "volumeSlider">
+        </div>
+        <div class="footercontainer">
+            <p>Hotkeys</p>
+            <p>//TODO</p>
+        </div>
+    </div>
+
 
     <script src = "/socket.io/socket.io.js"></script>
     <script src = "../room.js"></script>
