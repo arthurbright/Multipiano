@@ -4,7 +4,7 @@ A realtime multiplayer piano app! Join with an existing room code or create your
 Both mouse and keyboard can be used to play. 
 For keyboard, the [D] key is C5, and the rest of the notes are laid out like a normal piano. (ie [F] = D5, [G] = E5, etc).
 ## Try it out
-https://multipiano.herokuapp.com/
+[https://multipiano.herokuapp.com/](https://multipiano.glitch.me/)
 ## Features to be added/in progress
 - Changable hotkeys
 - Audio fade
